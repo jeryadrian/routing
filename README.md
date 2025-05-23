@@ -1,6 +1,6 @@
 # Transport Network Optimization for Temporary Storage Sites
 
-This project implements a greedy, network-based optimization algorithm to find optimal locations for temporary storage sites (TSS) between material origin points and circular construction hubs (CCH). The primary goal is to maximize the tonnage of materials routed through TSS, while also minimizing total transport effort measured in tonne-kilometers and considering road network constraints.
+This project implements a [greedy algorithm](https://en.wikipedia.org/wiki/Greedy_algorithm) to find optimal locations for temporary storage sites (TSS) between material origin points and circular construction hubs (CCH). The primary goal is to maximize the tonnage of materials routed through TSS, while also minimizing total transport effort measured in tonne-kilometers and considering road network constraints.
 
 ## Project Structure
 
@@ -29,7 +29,7 @@ This project implements a greedy, network-based optimization algorithm to find o
 
 The core of the routing functionality relies on the `igraph` library, a powerful tool for creating and manipulating graphs. The road network data (`road.gpkg`) is transformed into a graph where road intersections and significant points become 'nodes' (vertices) and road segments become 'edges'. Each edge is assigned a 'length' attribute, representing the real-world distance of that road segment.
 
-Once the graph is constructed, shortest path distances between any two points on the network (e.g., an origin and a CCH, or an origin and a TSS) are calculated using Dijkstra's algorithm, which is efficiently implemented in `igraph`. These calculated distances are then used by the greedy optimization algorithm to iteratively select the best TSS locations, prioritizing those that maximize tonnage routed through them while minimizing overall transport effort.
+Once the graph is constructed, shortest path distances between any two points on the network (e.g., an origin and a CCH, or an origin and a TSS) are calculated using [Dijkstra's algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm), which is efficiently implemented in `igraph`. These calculated distances are then used by the greedy optimization algorithm to iteratively select the best TSS locations, prioritizing those that maximize tonnage routed through them while minimizing overall transport effort.
 
 ## Requirements
 
