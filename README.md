@@ -1,6 +1,6 @@
 # Transport Network Optimization for Temporary Storage Sites
 
-This project implements a network-based optimization algorithm to find optimal locations for temporary storage sites (TSS) between material origin points and circular construction hubs (CCH). The goal is to minimize total transport effort measured in tonne-kilometers while considering road network constraints.
+This project implements a network-based optimization algorithm to find optimal locations for temporary storage sites (TSS) between material origin points and circular construction hubs (CCH). The primary goal is to maximize the tonnage of materials routed through TSS, while also minimizing total transport effort measured in tonne-kilometers and considering road network constraints.
 
 ## Project Structure
 
