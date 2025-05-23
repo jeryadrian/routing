@@ -6,14 +6,14 @@ This project implements a network-based optimization algorithm to find optimal l
 
 ```markdown
 .
-├── greedy.py              # Main optimization algorithm
-├── tkm_calculator.ipynb   # Analysis notebook for transport-kilometer calculations
-├── requirements.txt       # Python package dependencies
-├── input/                 # Input data files
+├── greedy.py             # Main optimization algorithm
+├── tkm_calculator.ipynb  # Analysis notebook for transport-kilometer calculations
+├── requirements.txt      # Python package dependencies
+├── input/                # Input data files
 │   ├── project.gpkg      # Material origin points with tonnage
-│   ├── 5cch.gpkg        # Circular Construction Hub locations
-│   ├── road.gpkg        # Road network for routing
-│   └── grid.gpkg        # Grid of potential TSS locations
+│   ├── 5cch.gpkg         # Circular Construction Hub locations
+│   ├── road.gpkg         # Road network for routing
+│   └── grid.gpkg         # Grid of potential TSS locations
 └── output/               # Generated results and debug files
 ```
 
