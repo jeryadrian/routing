@@ -4,7 +4,7 @@ This project implements a network-based optimization algorithm to find optimal l
 
 ## Project Structure
 
-```
+```markdown
 .
 ├── greedy.py              # Main optimization algorithm
 ├── tkm_calculator.ipynb   # Analysis notebook for transport-kilometer calculations
@@ -44,11 +44,13 @@ This project implements a network-based optimization algorithm to find optimal l
    - Potential TSS locations grid (GeoPackage)
 
 2. Run the optimization:
+
    ```bash
    python greedy.py
    ```
 
 3. Analyze results using the Jupyter notebook:
+
    ```bash
    jupyter notebook tkm_calculator.ipynb
    ```
@@ -56,27 +58,32 @@ This project implements a network-based optimization algorithm to find optimal l
 ## Input Data Format
 
 ### project.gpkg
+
 - Point geometries of material origins
 - Required columns:
   - `name`: Unique identifier for each origin
   - `tonnage`: Material quantity in tonnes
 
 ### 5cch.gpkg
+
 - Point geometries of circular construction hubs
 - Required columns:
   - `loc`: Unique identifier for each CCH
 
 ### road.gpkg
+
 - LineString geometries of the road network
 - Used for routing and distance calculations
 
 ### grid.gpkg
+
 - Point geometries of potential TSS locations
 - Forms the search space for optimization
 
 ## Output Files
 
 The optimization produces several output files:
+
 - `optimal_tss_locations.gpkg`: Selected TSS locations
 - `final_origin_routes.gpkg`: Detailed routing results
 - `final_origin_routes.csv`: Route statistics and metrics
@@ -85,6 +92,7 @@ The optimization produces several output files:
 ## Analysis Tools
 
 The `tkm_calculator.ipynb` notebook provides:
+
 - Detailed transport-kilometer calculations
 - Route statistics and summaries
 - Data validation and verification
@@ -93,6 +101,7 @@ The `tkm_calculator.ipynb` notebook provides:
 ## Algorithm Overview
 
 The greedy algorithm in `greedy.py`:
+
 1. Loads and validates input data
 2. Builds a network graph from road data
 3. Snaps all points (origins, CCHs, grid) to network
@@ -100,7 +109,3 @@ The greedy algorithm in `greedy.py`:
 5. Iteratively selects optimal TSS locations
 6. Generates detailed routing solutions
 7. Saves results and debug information
-
-## License
-
-[Your license information here]
