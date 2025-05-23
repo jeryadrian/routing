@@ -11,7 +11,7 @@ This project implements a network-based optimization algorithm to find optimal l
 ├── requirements.txt      # Python package dependencies
 ├── input/                # Input data files
 │   ├── project.gpkg      # Material origin points with tonnage
-│   ├── 5cch.gpkg         # Circular Construction Hub locations
+│   ├── cch.gpkg          # Circular Construction Hub locations
 │   ├── road.gpkg         # Road network for routing
 │   └── grid.gpkg         # Grid of potential TSS locations
 └── output/               # Generated results and debug files
@@ -19,11 +19,17 @@ This project implements a network-based optimization algorithm to find optimal l
 
 ## Key Features
 
-- Network-based optimization using Python's igraph library
+- Network-based optimization using Python's [igraph](https://igraph.org/) library
 - Support for both direct routes (Origin → CCH) and indirect routes (Origin → TSS → CCH)
 - Automatic snapping of points to road network nodes
 - Detailed distance and tonne-kilometer calculations
 - Comprehensive debug outputs and visualizations
+
+## Routing Mechanism
+
+The core of the routing functionality relies on the `igraph` library, a powerful tool for creating and manipulating graphs. The road network data (`road.gpkg`) is transformed into a graph where road intersections and significant points become 'nodes' (vertices) and road segments become 'edges'. Each edge is assigned a 'length' attribute, representing the real-world distance of that road segment.
+
+Once the graph is constructed, shortest path distances between any two points on the network (e.g., an origin and a CCH, or an origin and a TSS) are calculated using Dijkstra's algorithm, which is efficiently implemented in `igraph`. This allows the optimization algorithm to accurately determine the transport effort for various routing scenarios.
 
 ## Requirements
 
