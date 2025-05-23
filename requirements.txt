@@ -1,0 +1,5 @@
+geopandas>=0.13.0    # For handling geospatial data
+pandas>=2.0.0        # For data manipulation
+numpy>=1.24.0        # For numerical operations
+shapely>=2.0.0       # For geometric operations
+igraph>=0.10.0       # For network/graph operations
