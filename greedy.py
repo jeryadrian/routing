@@ -16,17 +16,19 @@ print("--- 1. Configuration ---")
 
 # Input GeoPackage Files:
 # - project.gpkg: Material origin points with tonnage information
-# - 5cch.gpkg: Circular Construction Hub locations (final destinations)
+# - cch.gpkg: Circular Construction Hub locations (final destinations)
 # - road.gpkg: Road network for routing
 # - grid.gpkg: Grid of potential TSS locations
+# - Adjust file paths as needed
 ORIGIN_GPKG = 'input/project.gpkg'
-CCH_GPKG = 'input/5cch.gpkg'
+CCH_GPKG = 'input/cch.gpkg' 
 ROAD_NETWORK_GPKG = 'input/road.gpkg'
 GRID_INPUT_GPKG = 'input/grid.gpkg'
 
 # Output Directory and Files
 # Results include optimal TSS locations, routes, debug information,
 # and optimization logs in both GeoPackage and CSV formats
+# Adjust output paths as needed
 OUTPUT_DIR = 'output'
 OPTIMAL_TSS_GPKG = os.path.join(OUTPUT_DIR, 'optimal_tss_locations.gpkg')
 CANDIDATE_NODES_GPKG = os.path.join(OUTPUT_DIR, 'candidate_tss_nodes_debug.gpkg')
@@ -39,6 +41,7 @@ FINAL_ROUTES_CSV = os.path.join(OUTPUT_DIR, 'final_origin_routes.csv')
 FINAL_ROUTES_GPKG = os.path.join(OUTPUT_DIR, 'final_origin_routes.gpkg')
 
 # Analysis Parameters
+# Adjust these parameters based on your analysis needs
 TARGET_CRS = 'EPSG:28992'          # Dutch coordinate system (Rijksdriehoekstelsel)
 ORIGIN_ID_COL = 'name'             # Column name for origin point identifiers
 ORIGIN_TONNAGE_COL = 'tonnage'     # Column name for material quantities
