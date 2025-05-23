@@ -64,7 +64,7 @@ This project implements a network-based optimization algorithm to find optimal l
   - `name`: Unique identifier for each origin
   - `tonnage`: Material quantity in tonnes
 
-### 5cch.gpkg
+### cch.gpkg
 
 - Point geometries of circular construction hubs
 - Required columns:
