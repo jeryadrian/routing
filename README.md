@@ -58,6 +58,33 @@ This project includes two main Python scripts, `greedy.py` and `routing.py`, eac
   - `input/road.gpkg`: The road network.
 - **Output:** Generates routing results (paths and distances) for each origin to its chosen destination (direct CCH or via a pre-defined TSS).
 
+## Detailed Calculation Differences
+
+While both `greedy.py` and `routing.py` perform routing calculations, their core logic and objectives differ significantly, especially in how they handle Temporary Storage Sites (TSS) and determine optimal routes.
+
+### 1. Primary Objective
+
+- **`greedy.py` (Optimization):** Its main goal is to *find and select* the optimal TSS locations from a set of candidates. It's an optimization script that determines *where* TSS should be placed to minimize overall transport effort and maximize tonnage routed through them.
+- **`routing.py` (Calculation):** Its main goal is to *calculate routes* and associated tonne-kilometers using *pre-defined* TSS locations. It assumes TSS locations are already given and focuses on finding the best path through them or directly to CCHs.
+
+### 2. TSS Handling
+
+- **`greedy.py`:** Implements a **greedy heuristic** to iteratively choose a specified number of TSS from a grid of potential sites. The selection is based on which candidate site provides the most benefit (e.g., highest tonnage routed through TSS, lowest overall tonne-km).
+- **`routing.py`:** Does **not perform any TSS optimization or selection**. It simply uses the TSS locations provided in its input file (`input/tss.gpkg`).
+
+### 3. Route Decision Logic for an Origin
+
+- **`greedy.py`:** For each origin, it evaluates both a direct route to the closest CCH and a two-leg route via any *active* TSS (origin → active TSS → closest CCH from that TSS). It then selects the route that results in the **absolute minimum total distance** for that origin.
+- **`routing.py`:** For each origin, it first identifies the *closest direct CCH* and the *closest pre-defined TSS*. The decision is then made based on which of these two facilities is *closer in the first leg*:
+  - If the closest direct CCH is closer than or equally close to the closest TSS, it routes directly to that CCH.
+  - If the closest TSS is strictly closer than any direct CCH, it routes via that closest TSS to its own closest CCH.
+    This "first-leg proximity" rule can lead to different route choices compared to `greedy.py`'s "overall minimum total distance" rule.
+
+### 4. Precomputation of Distances
+
+- **`greedy.py`:** Precomputes and stores all relevant shortest path distances (origin to candidate TSS, origin to CCH, candidate TSS to CCH) in dictionaries before the main optimization loop. This speeds up the iterative evaluation of candidate TSS.
+- **`routing.py`:** Calculates shortest path distances on-the-fly for each origin and for each TSS-to-CCH segment within its main routing loop. It does not rely on extensive precomputed global distance matrices.
+
 ## Requirements
 
 - Python 3.8+
