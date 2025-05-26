@@ -21,7 +21,7 @@ print("--- 1. Configuration ---")
 # - grid.gpkg: Grid of potential TSS locations
 # - Adjust file paths as needed
 ORIGIN_GPKG = 'input/project.gpkg'
-CCH_GPKG = 'input/cch.gpkg' 
+CCH_GPKG = 'input/5cch.gpkg' 
 ROAD_NETWORK_GPKG = 'input/road.gpkg'
 GRID_INPUT_GPKG = 'input/grid.gpkg'
 
@@ -29,7 +29,7 @@ GRID_INPUT_GPKG = 'input/grid.gpkg'
 # Results include optimal TSS locations, routes, debug information,
 # and optimization logs in both GeoPackage and CSV formats
 # Adjust output paths as needed
-OUTPUT_DIR = 'output'
+OUTPUT_DIR = 'output/greedy_output'
 OPTIMAL_TSS_GPKG = os.path.join(OUTPUT_DIR, 'optimal_tss_locations.gpkg')
 CANDIDATE_NODES_GPKG = os.path.join(OUTPUT_DIR, 'candidate_tss_nodes_debug.gpkg')
 LOADED_GRID_GPKG = os.path.join(OUTPUT_DIR, 'loaded_grid_debug.gpkg')
@@ -47,7 +47,7 @@ ORIGIN_ID_COL = 'name'             # Column name for origin point identifiers
 ORIGIN_TONNAGE_COL = 'tonnage'     # Column name for material quantities
 CCH_ID_COL = 'loc'                 # Column name for CCH identifiers
 MAX_SNAP_DISTANCE = 500            # Maximum distance (meters) to snap points to network
-NUM_TSS_TO_LOCATE = 5              # Number of temporary storage sites to optimize
+NUM_TSS_TO_LOCATE = 10             # Number of temporary storage sites to optimize
 DISTANCE_DIVISOR = 1000.0          # Convert distances from meters to kilometers
 
 # Constants for facility type identification in outputs
@@ -589,9 +589,12 @@ def find_optimal_locations_greedy_prioritize_tonnage(
         chosen_tss_nodes, origin_map, origin_tonnage_map,
         dist_origin_to_candidate, dist_origin_to_cch, dist_candidate_to_nearest_cch, distance_divisor)
     
+    baseline_total_dist_km = baseline_dist_o_cch_direct_km + baseline_dist_o_tss_km + baseline_dist_tss_cch_km
+    
     print(f"Baseline (0 TSS):")
     print(f"  Total Tonne-km: {baseline_tk:.2f}")
-    print(f"  Total Route Distance Breakdown (km):")
+    print(f"  Total Route Distance (km): {baseline_total_dist_km:.2f}")
+    print(f"  Breakdown:")
     print(f"    - Sum Dist (Direct O-CCH): {baseline_dist_o_cch_direct_km:.2f} km")
     print(f"    - Sum Dist (Via TSS, O-TSS leg): {baseline_dist_o_tss_km:.2f} km")
     print(f"    - Sum Dist (Via TSS, TSS-CCH leg): {baseline_dist_tss_cch_km:.2f} km")
@@ -660,9 +663,11 @@ def find_optimal_locations_greedy_prioritize_tonnage(
             chosen_tss_nodes.add(best_cand_iter)
             available_candidates.remove(best_cand_iter)
             selected_tss_nodes.add(best_cand_iter)
+            best_iter_total_dist_km = best_iter_dist_o_cch_direct_km + best_iter_dist_o_tss_km + best_iter_dist_tss_cch_km
             print(f"  → Added Node {best_cand_iter} as TSS #{len(chosen_tss_nodes)} (Prioritized Tonnage).")
             print(f"  Total Tonne-km with {len(chosen_tss_nodes)} TSS: {best_iter_tk_for_best_cand:.2f}")
-            print(f"  Total Route Distance Breakdown (km):")
+            print(f"  Total Route Distance (km): {best_iter_total_dist_km:.2f}")
+            print(f"  Breakdown:")
             print(f"    - Sum Dist (Direct O-CCH): {best_iter_dist_o_cch_direct_km:.2f} km")
             print(f"    - Sum Dist (Via TSS, O-TSS leg): {best_iter_dist_o_tss_km:.2f} km")
             print(f"    - Sum Dist (Via TSS, TSS-CCH leg): {best_iter_dist_tss_cch_km:.2f} km")
@@ -706,14 +711,6 @@ def find_optimal_locations_greedy_prioritize_tonnage(
         final_dist_o_tss_km_overall = final_log_entry.get('dist_o_tss_km', 0.0)
         final_dist_tss_cch_km_overall = final_log_entry.get('dist_tss_cch_km', 0.0)
         final_dist_o_cch_direct_km_overall = final_log_entry.get('dist_o_cch_direct_km', 0.0)
-
-    print(f"Final State ({final_n_tss_overall} TSS placed, {len(chosen_tss_nodes)} selected):")
-    print(f"  Total Tonne-km: {final_tk_overall:.2f}")
-    print(f"  Total Route Distance Breakdown (km):")
-    print(f"    - Sum Dist (Direct O-CCH): {final_dist_o_cch_direct_km_overall:.2f} km")
-    print(f"    - Sum Dist (Via TSS, O-TSS leg): {final_dist_o_tss_km_overall:.2f} km")
-    print(f"    - Sum Dist (Via TSS, TSS-CCH leg): {final_dist_tss_cch_km_overall:.2f} km")
-    print(f"  ({final_unserved_overall} unserved, {final_origins_using_tss_overall} origins using TSS, {final_tonnage_using_tss_overall:.2f}t using TSS).")
 
     print(f"  → Optimization algorithm time: {time.time() - optimization_start_time:.2f} seconds.")
     return chosen_tss_nodes, final_tk_overall, pd.DataFrame(results_log)
@@ -958,11 +955,13 @@ if not results_log_df.empty:
     final_dist_o_tss_km_log = final_log_entry.get('dist_o_tss_km', 0.0)
     final_dist_tss_cch_km_log = final_log_entry.get('dist_tss_cch_km', 0.0)
     final_dist_o_cch_direct_km_log = final_log_entry.get('dist_o_cch_direct_km', 0.0)
+    final_total_dist_km_log = final_dist_o_cch_direct_km_log + final_dist_o_tss_km_log + final_dist_tss_cch_km_log
 
     print(f"Found {num_actually_selected_tss} optimal TSS locations.")
     print(f"Final State (based on log for {final_log_entry['num_tss']} TSS):")
     print(f"  Total Tonne-km: {final_tk_total_from_log:.2f}")
-    print(f"  Total Route Distance Breakdown (km):")
+    print(f"  Total Route Distance (km): {final_total_dist_km_log:.2f}")
+    print(f"  Breakdown:")
     print(f"    - Sum Dist (Direct O-CCH): {final_dist_o_cch_direct_km_log:.2f} km")
     print(f"    - Sum Dist (Via TSS, O-TSS leg): {final_dist_o_tss_km_log:.2f} km")
     print(f"    - Sum Dist (Via TSS, TSS-CCH leg): {final_dist_tss_cch_km_log:.2f} km")
@@ -974,19 +973,6 @@ else:
     print("Optimization results or log not available, or optimization did not run successfully to produce a tonne-km value.")
 
 print(f"\nCheck {OUTPUT_DIR} for optimization log, selected TSS locations, and detailed final routes.")
-
-# Save optimization results to GeoPackage
-# Convert selected TSS points to GeoDataFrame
-tss_points = gpd.GeoDataFrame(
-    geometry=[graph_nodes_dict[node]['geometry'] for node in selected_tss_nodes],
-    crs=TARGET_CRS
-)
-
-# Add metadata columns
-tss_points['id'] = range(len(tss_points))
-
-# Save to output file
-tss_points.to_file("output/optimized_tss_locations.gpkg", driver="GPKG")
 
 print("\nOptimization completed!")
 print(f"Found {len(candidate_points_used)} TSS locations")
